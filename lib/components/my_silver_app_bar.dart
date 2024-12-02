@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/models/restaurant.dart';
+import 'package:food_delivery_app/pages/cart_page.dart';
 import 'package:provider/provider.dart';
 
 class MySilverAppBar extends StatefulWidget {
@@ -15,45 +16,53 @@ class MySilverAppBar extends StatefulWidget {
 class _MySilverAppBarState extends State<MySilverAppBar> {
   @override
   Widget build(BuildContext context) {
-    int totalCartItemCount = context.read<Restaurant>().getTotalItemCount();
     return SliverAppBar(
       expandedHeight: 340,
       collapsedHeight: 120,
       floating: false,
       pinned: true,
       actions: [
-        Stack(
-          children: [
-            IconButton(
-              onPressed: () {},
-              icon: const Icon(Icons.shopping_cart),
-            ),
-            if (totalCartItemCount > 0)
-              Positioned(
-                right: 8,
-                top: 8,
-                child: Container(
-                  padding: const EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                    color: Colors.red,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  constraints: const BoxConstraints(
-                    minWidth: 20,
-                    minHeight: 20,
-                  ),
-                  child: Text(
-                    '$totalCartItemCount',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
+        Consumer<Restaurant>(
+          builder: (context, restaurant, child) {
+            final itemCount = restaurant.getTotalItemCount();
+
+            return Stack(
+              children: [
+                IconButton(
+                  onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const CartPage())),
+                  icon: const Icon(Icons.shopping_cart),
                 ),
-              ),
-          ],
+                if (itemCount > 0)
+                  Positioned(
+                    right: 3,
+                    top: 3,
+                    child: Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      constraints: const BoxConstraints(
+                        minWidth: 20,
+                        minHeight: 20,
+                      ),
+                      child: Text(
+                        '$itemCount',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+              ],
+            );
+          },
         ),
       ],
       backgroundColor: Theme.of(context).colorScheme.surface,
