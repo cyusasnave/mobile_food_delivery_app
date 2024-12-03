@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:food_delivery_app/components/my_button.dart';
 import 'package:food_delivery_app/components/my_cart_tile.dart';
 import 'package:food_delivery_app/models/restaurant.dart';
+import 'package:food_delivery_app/pages/payment_page.dart';
 import 'package:provider/provider.dart';
 
 class CartPage extends StatelessWidget {
@@ -48,32 +50,53 @@ class CartPage extends StatelessWidget {
         ),
         body: Column(
           children: [
-            userCart.isEmpty
-                ? const Expanded(
-                    child: Center(
-                        child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.shopping_basket,
-                        size: 50,
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Text(
-                        'Cart is Empty!',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  )))
-                : Expanded(
-                    child: ListView.builder(
-                        itemCount: userCart.length,
-                        itemBuilder: (context, index) {
-                          final cartItem = userCart[index];
-                          return MyCartTile(cartItem: cartItem);
-                        }))
+            // list of cart items
+            Expanded(
+              child: Column(
+                children: [
+                  userCart.isEmpty
+                      ? const Expanded(
+                          child: Center(
+                              child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.shopping_basket,
+                              size: 50,
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                              'Cart is Empty!',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        )))
+                      : Expanded(
+                          child: ListView.builder(
+                              itemCount: userCart.length,
+                              itemBuilder: (context, index) {
+                                final cartItem = userCart[index];
+                                return MyCartTile(cartItem: cartItem);
+                              }))
+                ],
+              ),
+            ),
+            // button to pay
+            userCart.isNotEmpty
+                ? MyButton(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const PaymentPage()));
+                    },
+                    title: 'Go To Checkout')
+                : const SizedBox(),
+            const SizedBox(
+              height: 35,
+            ),
           ],
         ),
       );
